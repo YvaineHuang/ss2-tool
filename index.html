@@ -392,6 +392,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .grid-card:hover{border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,142,247,.15)}
 .grid-card.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,142,247,.3);background:rgba(79,142,247,.06)}
 .grid-card.new-item{border-color:var(--yellow)}
+.grid-card[draggable]{cursor:grab}
+.grid-card[draggable]:active{cursor:grabbing}
+.grid-card.grid-drag-over-top{border-left:3px solid var(--accent);box-shadow:-3px 0 0 0 var(--accent)}
+.grid-card.grid-drag-over-bot{border-right:3px solid var(--accent);box-shadow:3px 0 0 0 var(--accent)}
 .grid-img-wrap{width:100%;height:110px;background:var(--bg3);position:relative;overflow:hidden;flex-shrink:0}
 .grid-img-wrap img{width:100%;height:100%;object-fit:contain;display:block}
 .grid-img-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text3)}
@@ -544,18 +548,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
               <span style="font-size:13px;font-weight:600;color:var(--text)">Google Drive 設定</span>
               <span id="gdrive-user-badge" style="font-size:11px;color:var(--green);margin-left:auto"></span>
             </div>
-            <div style="font-size:11px;color:var(--text3);margin-bottom:10px">貼上各檔案在 Google Drive 的 File ID（從分享連結中取得），之後點「☁ 從 Drive 匯入」即可自動抓取最新版本。</div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:10px">填入各檔案在 Google Drive 上的<b style="color:var(--text2)">檔案名稱</b>（含副檔名），之後點「☁ 從 Drive 匯入」即可自動搜尋並抓取最新版本，不需要更新 File ID。</div>
             <div id="gdrive-file-ids" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px">
-              <div><div style="color:var(--text2);margin-bottom:3px">Retail Nav File ID</div><input id="gfid-retail-nav" type="text" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
-              <div><div style="color:var(--text2);margin-bottom:3px">Outlet Nav File ID</div><input id="gfid-outlet-nav" type="text" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
-              <div><div style="color:var(--text2);margin-bottom:3px">Retail SS2 File ID</div><input id="gfid-retail-ss2" type="text" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
-              <div><div style="color:var(--text2);margin-bottom:3px">Outlet SS2 File ID</div><input id="gfid-outlet-ss2" type="text" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
-              <div><div style="color:var(--text2);margin-bottom:3px">FP Linelist File ID</div><input id="gfid-fp-linelist" type="text" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
-              <div><div style="color:var(--text2);margin-bottom:3px">FS Linelist File ID</div><input id="gfid-fs-linelist" type="text" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
-              <div><div style="color:var(--text2);margin-bottom:3px">圖片 URL 對照表 File ID</div><input id="gfid-imageurl" type="text" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
-              <div><div style="color:var(--text2);margin-bottom:3px">商品總檔 File ID</div><input id="gfid-mastercatalog" type="text" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs..." style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
+              <div><div style="color:var(--text2);margin-bottom:3px">Retail Nav 檔案名稱</div><input id="gfid-retail-nav" type="text" placeholder="Category對應表 Retail.xlsx" style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
+              <div><div style="color:var(--text2);margin-bottom:3px">Outlet Nav 檔案名稱</div><input id="gfid-outlet-nav" type="text" placeholder="Category對應表 Outlet.xlsx" style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
+              <div><div style="color:var(--text2);margin-bottom:3px">Retail SS2 檔案名稱</div><input id="gfid-retail-ss2" type="text" placeholder="SS2 Retail.xlsx" style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
+              <div><div style="color:var(--text2);margin-bottom:3px">Outlet SS2 檔案名稱</div><input id="gfid-outlet-ss2" type="text" placeholder="SS2 Outlet.xlsx" style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
+              <div><div style="color:var(--text2);margin-bottom:3px">FP Linelist 檔案名稱</div><input id="gfid-fp-linelist" type="text" placeholder="FP Linelist.xlsx" style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
+              <div><div style="color:var(--text2);margin-bottom:3px">FS Linelist 檔案名稱</div><input id="gfid-fs-linelist" type="text" placeholder="FS Linelist.xlsx" style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
+              <div><div style="color:var(--text2);margin-bottom:3px">圖片 URL 對照表 檔案名稱</div><input id="gfid-imageurl" type="text" placeholder="Image URL對照表.xlsx" style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
+              <div><div style="color:var(--text2);margin-bottom:3px">商品總檔 檔案名稱</div><input id="gfid-mastercatalog" type="text" placeholder="官網商品總檔.xlsx" style="width:100%;padding:4px 6px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);font-size:11px" oninput="saveDriveFileIds()"></div>
             </div>
-            <div style="margin-top:10px;font-size:11px;color:var(--text3)">💡 如何取得 File ID：在 Drive 對該檔案按右鍵 → 取得連結，URL 中 <code>/d/</code> 與 <code>/view</code> 之間的字串即為 File ID。</div>
+            <div style="margin-top:10px;font-size:11px;color:var(--text3)">💡 檔案名稱需與 Google Drive 上完全一致（含副檔名）。若同名有多個檔案，會自動選最新修改的那份。</div>
             <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
               <button class="import-file-btn" style="border-color:var(--accent);color:var(--accent);font-size:11px" onclick="gdriveSignIn()" title="強制跳出 Google 授權畫面，重新取得 drive.readonly 權限">🔄 重新授權</button>
               <button class="import-file-btn" style="border-color:var(--red);color:var(--red);font-size:11px" onclick="gdriveSignOut()">登出 Google</button>
@@ -4776,14 +4780,76 @@ function renderGridView(){
     const card = document.createElement('div');
     card.className = 'grid-card' + (sel?' selected':'') + (isNew?' new-item':'');
     card.dataset.sc = sc;
+    card.dataset.idx = idx;
+    card.draggable = true;
     card.onclick = function(e){
       if(e.target.type === 'checkbox') return;
-      // click to select
       const checked = !STATE.selectedItems.has(sc);
       toggleItemSelect(sc, checked, e);
       card.classList.toggle('selected', checked);
       card.querySelector('.grid-card-check input').checked = checked;
     };
+    // 拖曳事件 — 複用列表視圖的 dragSrcIdx 機制
+    card.addEventListener('dragstart', e => {
+      dragSrcIdx = idx;
+      card.style.opacity = '0.4';
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.style.opacity = '';
+      document.querySelectorAll('#grid-view-inner .grid-card').forEach(c => {
+        c.classList.remove('grid-drag-over-top','grid-drag-over-bot');
+      });
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      document.querySelectorAll('#grid-view-inner .grid-card').forEach(c => {
+        c.classList.remove('grid-drag-over-top','grid-drag-over-bot');
+      });
+      const rect = card.getBoundingClientRect();
+      card.classList.add(e.clientX < rect.left + rect.width / 2 ? 'grid-drag-over-top' : 'grid-drag-over-bot');
+    });
+    card.addEventListener('dragleave', () => {
+      card.classList.remove('grid-drag-over-top','grid-drag-over-bot');
+    });
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      const insertBefore = card.classList.contains('grid-drag-over-top');
+      card.classList.remove('grid-drag-over-top','grid-drag-over-bot');
+      document.querySelectorAll('#grid-view-inner .grid-card').forEach(c => c.style.opacity = '');
+      if(dragSrcIdx === null || dragSrcIdx === idx){ dragSrcIdx = null; return; }
+
+      const mode = STATE.mode, link = STATE.selectedLink;
+      const allItems = getOrderedItems();
+      const visibleItems = getFilteredItems();
+
+      const srcItem = visibleItems[dragSrcIdx];
+      if(!srcItem){ dragSrcIdx = null; return; }
+
+      let toMove;
+      if(STATE.selectedItems.size > 1 && STATE.selectedItems.has(srcItem.style_color)){
+        toMove = allItems.filter(i => STATE.selectedItems.has(i.style_color));
+      } else {
+        toMove = [srcItem];
+      }
+      const targetItem = visibleItems[idx];
+      if(!targetItem){ dragSrcIdx = null; return; }
+
+      const moveSet = new Set(toMove.map(i => i.style_color));
+      const remaining = allItems.filter(i => !moveSet.has(i.style_color));
+      const tIdx = remaining.findIndex(i => i.style_color === targetItem.style_color);
+      const insertAt = tIdx === -1 ? remaining.length : (insertBefore ? tIdx : tIdx + 1);
+      remaining.splice(insertAt, 0, ...toMove);
+
+      STATE.customOrder[mode][link] = remaining.map(i => i.style_color);
+      STATE.dirtyState[mode] = true;
+      saveAll().catch(()=>{});
+      renderGridView();
+      // 同步更新列表視圖（切換回去時立即反映）
+      if(_viewMode === 'list') renderItems(false);
+      dragSrcIdx = null;
+    });
 
     // Image wrap
     const imgWrap = document.createElement('div');
@@ -6042,7 +6108,7 @@ async function saveEditModal(styleColor){
 const GDRIVE_CLIENT_ID = '586840483563-de7egg7qbdufn6f7na1ois7qv1cgh9tv.apps.googleusercontent.com';
 const GDRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file';
 const GDRIVE_LS_TOKEN = 'ss2_gdrive_token';
-const GDRIVE_LS_FILEIDS = 'ss2_gdrive_fileids';
+const GDRIVE_LS_FILENAMES = 'ss2_gdrive_filenames'; // v3.3 改為儲存檔案名稱（原 ss2_gdrive_fileids 已棄用）
 const GDRIVE_LS_USER = 'ss2_gdrive_user';
 
 let _gdriveToken = null;
@@ -6084,27 +6150,53 @@ function isGDriveAuthed(){
 }
 
 // 儲存 File ID 設定
+// 儲存檔案名稱設定
 function saveDriveFileIds(){
   const keys = ['retail-nav','outlet-nav','retail-ss2','outlet-ss2','fp-linelist','fs-linelist','imageurl','mastercatalog'];
-  const ids = {};
+  const names = {};
   keys.forEach(k => {
     const el = document.getElementById('gfid-' + k);
-    if(el) ids[k] = el.value.trim();
+    if(el) names[k] = el.value.trim();
   });
-  localStorage.setItem(GDRIVE_LS_FILEIDS, JSON.stringify(ids));
+  localStorage.setItem(GDRIVE_LS_FILENAMES, JSON.stringify(names));
 }
 
-// 讀取 File ID 設定
+// 讀取檔案名稱設定
 function loadDriveFileIds(){
   try{
-    return JSON.parse(localStorage.getItem(GDRIVE_LS_FILEIDS)||'{}');
+    // 優先讀新版 fileNames；若無則嘗試讀舊版 fileids（升級相容）
+    const newData = localStorage.getItem(GDRIVE_LS_FILENAMES);
+    if(newData) return JSON.parse(newData);
+    return {};
   }catch(e){ return {}; }
 }
 
-// 取得特定 key 的 File ID
+// 取得特定 key 的檔案名稱
 function getDriveFileId(key){
-  const ids = loadDriveFileIds();
-  return ids[key] || '';
+  const names = loadDriveFileIds();
+  return names[key] || '';
+}
+
+// 用檔案名稱搜尋 Drive，回傳最新修改的 File ID
+async function searchDriveFileByName(fileName){
+  if(!isGDriveAuthed()) throw new Error('尚未連結 Google Drive');
+  // Drive API 搜尋：名稱完全符合，只找 xlsx，排除垃圾桶，依修改時間倒序
+  const q = encodeURIComponent(`name = '${fileName.replace(/'/g,"\\'")}' and trashed = false`);
+  const url = `https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,modifiedTime,size)&orderBy=modifiedTime desc&pageSize=5`;
+  const resp = await fetch(url, {
+    headers: { Authorization: 'Bearer ' + _gdriveToken }
+  });
+  if(!resp.ok){
+    const e = await resp.json().catch(()=>({}));
+    if(resp.status === 401){ clearGDriveToken(); updateGDriveUI(); throw new Error('Google Drive 授權已過期，請重新連結。'); }
+    throw new Error('搜尋失敗：' + (e.error?.message || resp.status));
+  }
+  const data = await resp.json();
+  if(!data.files || data.files.length === 0){
+    throw new Error(`在 Google Drive 找不到檔案「${fileName}」。請確認檔案名稱正確，且此帳號有權限存取。`);
+  }
+  // 回傳最新修改的那份
+  return data.files[0];
 }
 
 // 初始化 Drive UI 狀態
@@ -6297,9 +6389,9 @@ async function downloadDriveFile(fileId){
 
 // 主要入口：從 Drive 匯入指定資料
 async function driveImport(key){
-  const fileId = getDriveFileId(key);
-  if(!fileId){
-    notify('請先在 Drive 設定中填入 File ID', 'err', 3000);
+  const fileName = getDriveFileId(key); // 現在存的是檔案名稱
+  if(!fileName){
+    notify('請先在 Drive 設定中填入檔案名稱', 'err', 3000);
     return;
   }
   if(!isGDriveAuthed()){
@@ -6318,9 +6410,13 @@ async function driveImport(key){
     'mastercatalog': '商品總檔',
   };
 
-  showLoader(`從 Google Drive 下載 ${labelMap[key] || key}...`);
+  showLoader(`在 Google Drive 搜尋「${fileName}」...`);
   try{
-    const { file, meta } = await downloadDriveFile(fileId);
+    // 先搜尋檔案名稱，取得 File ID
+    const fileMeta = await searchDriveFileByName(fileName);
+    showLoader(`從 Google Drive 下載 ${labelMap[key] || key}...`);
+
+    const { file, meta } = await downloadDriveFile(fileMeta.id);
     hideLoader();
     notify(`✅ 已從 Drive 下載：${meta.name}，開始匯入...`, 'ok', 2000);
 
