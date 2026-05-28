@@ -71,6 +71,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .hbtn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .hbtn.primary:hover{background:var(--accent2)}
 .hbtn.danger{border-color:var(--red);color:var(--red)}
+.more-menu-wrap{position:relative;flex-shrink:0}
+.more-menu-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:4px;min-width:140px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.more-menu-item{display:block;width:100%;text-align:left;padding:7px 12px;border:none;background:transparent;color:var(--text2);font-size:12px;cursor:pointer;border-radius:5px;white-space:nowrap}
+.more-menu-item:hover{background:var(--bg3);color:var(--accent)}
 #status-bar{font-size:11px;color:var(--text3);padding:0 8px;border-left:1px solid var(--border)}
 
 /* ─── LAYOUT ─── */
@@ -208,6 +212,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .new-badge{display:inline-block;background:var(--yellow);color:#000;font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;margin-right:4px;vertical-align:middle;line-height:1.4}
 .transfer-badge{display:inline-block;background:var(--purple);color:#fff;font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;margin-right:4px;vertical-align:middle;line-height:1.4}
 .dup-badge{display:inline-block;background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;margin-right:4px;vertical-align:middle;line-height:1.4}
+.inv-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:5px;vertical-align:middle;line-height:1.4;letter-spacing:.3px}
+.inv-badge.inv-ok{background:rgba(52,199,89,.18);color:#34c759;border:1px solid rgba(52,199,89,.35)}
+.inv-badge.inv-zero{background:rgba(255,69,58,.15);color:#ff453a;border:1px solid rgba(255,69,58,.3)}
+.inv-loading{color:var(--text3);font-size:9px;margin-left:4px}
+.col-inv{width:52px;text-align:right;white-space:nowrap}
+.grid-inv-badge{position:absolute;bottom:4px;left:4px;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;line-height:1.4}
+.grid-inv-badge.inv-ok{background:rgba(52,199,89,.85);color:#fff}
+.grid-inv-badge.inv-zero{background:rgba(255,69,58,.85);color:#fff}
 .dragging-row{opacity:.4}
 .drag-insert-top td:first-child{border-top:2px solid var(--accent)}
 .drag-insert-top td{border-top:2px solid var(--accent)}
@@ -296,12 +308,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .val-order-item .vh{font-size:12px;color:var(--text3);flex-shrink:0}
 
 /* ─── FILTER DROPDOWN ─── */
-.filter-dropdown{position:absolute;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:6px;min-width:200px;max-height:280px;overflow-y:auto;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.filter-search{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:5px 8px;color:var(--text);font-size:11px;outline:none;margin-bottom:6px}
+.filter-dropdown{position:absolute;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:6px;min-width:200px;max-height:280px;overflow-y:hidden;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;flex-direction:column}
+.filter-search{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:5px 8px;color:var(--text);font-size:11px;outline:none;margin-bottom:6px;flex-shrink:0}
 .filter-item{display:flex;align-items:center;gap:6px;padding:3px 5px;border-radius:4px;cursor:pointer;font-size:11px;color:var(--text2)}
 .filter-item:hover{background:var(--bg3)}
 .filter-item input{accent-color:var(--accent);flex-shrink:0}
-.filter-actions{display:flex;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+.filter-actions{display:flex;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);flex-shrink:0}
 .filter-actions button{flex:1;padding:4px;border-radius:5px;border:1px solid var(--border2);color:var(--text3);cursor:pointer;font-size:10px;background:transparent}
 .filter-actions button:hover{border-color:var(--accent);color:var(--accent)}
 .th-filter-icon{font-size:9px;margin-left:3px;color:var(--text3)}
@@ -432,9 +444,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
       <span class="dot" id="dot-outlet"></span>Outlet
     </button>
   </div>
-  <div id="status-bar">未載入資料</div>
+  <div id="status-bar" style="display:none">未載入資料</div>
   <div class="spacer"></div>
-  <button class="hbtn" onclick="openTab('draft')">📥 底稿</button>
   <button class="hbtn" onclick="showSortModal()">⇅ 排序</button>
   <button class="hbtn" onclick="showDeleteModal()">🗑 批量刪除</button>
   <button class="hbtn" onclick="showTransferModal()">⇄ 商品轉換</button>
@@ -442,8 +453,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
   <div class="tb-sep"></div>
   <button class="hbtn" onclick="showGlobalSearchModal()" title="搜尋所有分類頁">🔍 全域搜尋</button>
   <button class="hbtn primary" onclick="showExportModal()">⬇ 匯出</button>
-  <button class="hbtn" onclick="showBackupModal()">☁ 備份</button>
-  <button class="hbtn" onclick="showImportModal()">⬆ 匯入資料</button>
+  <!-- 更多選單 -->
+  <div class="more-menu-wrap" id="more-menu-wrap">
+    <button class="hbtn" onclick="toggleMoreMenu()" id="more-menu-btn" title="更多功能">⋯ 更多</button>
+    <div class="more-menu-dropdown" id="more-menu-dropdown" style="display:none">
+      <button class="more-menu-item" onclick="showBackupModal();closeMoreMenu()">☁ 備份 / 還原</button>
+      <button class="more-menu-item" onclick="showImportModal();closeMoreMenu()">⬆ 匯入資料</button>
+    </div>
+  </div>
   <div class="tb-sep"></div>
   <button class="hbtn" id="gdrive-btn" onclick="handleGDriveAuth()" title="連結 Google Drive 以啟用雲端匯入">🔗 連結 Drive</button>
 </div>
@@ -455,6 +472,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
     <div id="nav-search"><input type="text" placeholder="搜尋分類頁..." id="nav-search-input" oninput="filterNav(this.value)"></div>
     <div id="nav-tree"></div>
     <div id="sidebar-bottom">
+      <div id="status-bar-sidebar" style="font-size:10px;color:var(--text3);padding:0 2px 6px;line-height:1.7;display:none"></div>
       <button id="add-cat-btn" onclick="showAddCatModal()">＋ 新增分類頁 / 選單</button>
     </div>
   </div>
@@ -523,6 +541,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
               <th class="col-sil" onclick="quickSort('silhouette')">Silhouette <span class="th-filter-icon" id="fi-sil" onclick="event.stopPropagation();openFilter('silhouette',this)">▼</span></th>
               <th class="col-date" onclick="quickSort('intro_date')">Intro Date <span class="th-filter-icon" id="fi-date" onclick="event.stopPropagation();openFilter('intro_date',this)">▼</span></th>
               <th class="col-price" onclick="quickSort('sales_price')">Sales Price <span class="th-filter-icon" id="fi-price" onclick="event.stopPropagation();openFilter('sales_price',this)">▼</span></th>
+              <th class="col-inv" title="即時庫存（自動從 Google Sheets 抓取）">庫存</th>
               <th class="col-upc">UPC</th>
               <th class="col-edit"></th>
             </tr>
@@ -788,6 +807,7 @@ const STATE = {
   linelistData: { fp: null, fs: null },
   imageUrlData: { map: {}, count: 0, source_file_name: '', imported_at: null },  // SC -> URL map
   masterCatalogData: { map: {}, count: 0, source_file_name: '', imported_at: null }, // SC -> {upc, sales_price}
+  inventoryData: { map: {}, updated_at: null, loading: false }, // SC -> QTY 加總
   tagDefs: [],          // [{id, name, color}, ...]
   tagMap: { retail: {}, outlet: {} }, // {style_color: [tag_id,...]}
   transferLog: [],
@@ -1804,6 +1824,8 @@ function selectCategory(link, level){
   openTab('items');
   renderNav();
   renderItems();
+  // 每次切換分類頁觸發庫存抓取（5 分鐘內有資料則不重抓）
+  fetchInventoryData();
 }
 
 // ============================================================
@@ -1882,6 +1904,13 @@ function renderItems(resetScroll=true){
     const isDup = item.is_duplicate_mark;
     const badge = isDup ? '<span class="dup-badge">重複</span>' : (isNew ? (isTransfer ? '<span class="transfer-badge">轉入</span>' : '<span class="new-badge">NEW</span>') : '');
     const price = item.sales_price != null ? Number(item.sales_price).toLocaleString() : '';
+    // 庫存
+    const invQty = STATE.inventoryData.map[sc];
+    const invHtml = STATE.inventoryData.loading
+      ? '<span class="inv-loading">…</span>'
+      : (invQty != null
+          ? `<span class="inv-badge ${invQty > 0 ? 'inv-ok' : 'inv-zero'}">${invQty}</span>`
+          : '');
     // Tag chips
     const itemTagIds = STATE.tagMap[mode][sc] || [];
     const tagChipsHtml = itemTagIds.map(tid=>{
@@ -1903,6 +1932,7 @@ function renderItems(resetScroll=true){
       <td class="col-sil" title="${escHtml(item.silhouette)}">${escHtml(item.silhouette)}</td>
       <td class="col-date">${escHtml(item.intro_date)}</td>
       <td class="col-price" style="text-align:right">${price}</td>
+      <td class="col-inv" style="text-align:right">${invHtml}</td>
       <td class="col-upc" title="${escHtml(item.upc)}">${escHtml(item.upc)}</td>
       <td class="col-edit"><button class="edit-btn" onclick="openEditModal('${escHtml(sc)}');event.stopPropagation()" title="編輯商品資料">✎</button></td>
     </tr>`;
@@ -2058,7 +2088,7 @@ function openFilter(field, iconEl){
   div.className='filter-dropdown';
   div.style.cssText=`top:${rect.bottom+4}px;left:${rect.left}px;position:fixed`;
   div.innerHTML=`<input class="filter-search" placeholder="搜尋..." oninput="filterDropdownSearch(this)">
-    <div id="fd-list">${vals.map(v=>`<label class="filter-item"><input type="checkbox" value="${escHtml(v)}" ${active.has(v)?'checked':''}><span>${escHtml(v)||'(空白)'}</span></label>`).join('')}</div>
+    <div id="fd-list" style="overflow-y:auto;flex:1;min-height:0">${vals.map(v=>`<label class="filter-item"><input type="checkbox" value="${escHtml(v)}" ${active.has(v)?'checked':''}><span>${escHtml(v)||'(空白)'}</span></label>`).join('')}</div>
     <div class="filter-actions"><button onclick="fdAll(true)">全選</button><button onclick="fdAll(false)">清除</button><button onclick="applyFilterDropdown('${field}')">套用</button></div>`;
   document.body.appendChild(div);
   STATE.filterDropdown = div;
@@ -3346,7 +3376,7 @@ function openDraftFilter(field, iconEl){
   div.className='filter-dropdown';
   div.style.cssText=`top:${rect.bottom+4}px;left:${Math.min(rect.left, window.innerWidth-220)}px;position:fixed`;
   div.innerHTML=`<input class="filter-search" placeholder="搜尋..." oninput="filterDropdownSearch(this)">
-    <div id="fd-list">${vals.map(v=>`<label class="filter-item"><input type="checkbox" value="${escHtml(v)}" ${active.has(v)?'checked':''} ><span>${escHtml(v)||'(空白)'}</span></label>`).join('')}</div>
+    <div id="fd-list" style="overflow-y:auto;flex:1;min-height:0">${vals.map(v=>`<label class="filter-item"><input type="checkbox" value="${escHtml(v)}" ${active.has(v)?'checked':''} ><span>${escHtml(v)||'(空白)'}</span></label>`).join('')}</div>
     <div class="filter-actions"><button onclick="fdAll(true)">全選</button><button onclick="fdAll(false)">清除</button><button onclick="applyDraftFilterDropdown('${field}')">套用</button></div>`;
   document.body.appendChild(div);
   STATE.filterDropdown = div;
@@ -4613,12 +4643,20 @@ function switchMode(mode){
 function updateStatusBar(){
   const r = STATE.metadata.retail, o = STATE.metadata.outlet;
   const nr = STATE.navMeta.retail, no_ = STATE.navMeta.outlet;
-  const parts = [];
-  if(nr) parts.push(`R-Nav:${STATE.navigationData.retail.length}`);
-  if(no_) parts.push(`O-Nav:${STATE.navigationData.outlet.length}`);
-  if(r) parts.push(`R-SS2:${r.row_count}筆`);
-  if(o) parts.push(`O-SS2:${o.row_count}筆`);
-  document.getElementById('status-bar').textContent = parts.length ? parts.join(' | ') : '未載入資料';
+  const lines = [];
+  if(nr) lines.push(`R-Nav: ${STATE.navigationData.retail.length} 筆`);
+  if(no_) lines.push(`O-Nav: ${STATE.navigationData.outlet.length} 筆`);
+  if(r) lines.push(`R-SS2: ${r.row_count} 筆`);
+  if(o) lines.push(`O-SS2: ${o.row_count} 筆`);
+  const el = document.getElementById('status-bar-sidebar');
+  if(el){
+    if(lines.length){
+      el.innerHTML = lines.map(l=>`<div>${l}</div>`).join('');
+      el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
+  }
 }
 
 function updateDirtyDots(){
@@ -4889,6 +4927,15 @@ function renderGridView(){
     imgWrap.appendChild(numBadge);
     imgWrap.appendChild(checkWrap);
     if(statusBadge) imgWrap.appendChild(statusBadge);
+
+    // 庫存 badge（左下角）
+    const invQty = STATE.inventoryData.map[sc];
+    if(invQty != null){
+      const invBadge = document.createElement('div');
+      invBadge.className = 'grid-inv-badge ' + (invQty > 0 ? 'inv-ok' : 'inv-zero');
+      invBadge.textContent = invQty;
+      imgWrap.appendChild(invBadge);
+    }
 
     // Body
     const body = document.createElement('div');
@@ -6106,7 +6153,7 @@ async function saveEditModal(styleColor){
 // GOOGLE DRIVE 整合
 // ============================================================
 const GDRIVE_CLIENT_ID = '586840483563-de7egg7qbdufn6f7na1ois7qv1cgh9tv.apps.googleusercontent.com';
-const GDRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file';
+const GDRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets.readonly';
 const GDRIVE_LS_TOKEN = 'ss2_gdrive_token';
 const GDRIVE_LS_FILENAMES = 'ss2_gdrive_filenames'; // v3.3 改為儲存檔案名稱（原 ss2_gdrive_fileids 已棄用）
 const GDRIVE_LS_USER = 'ss2_gdrive_user';
@@ -6315,6 +6362,97 @@ async function fetchGDriveUserInfo(token){
   }catch(e){}
 }
 
+// ── 更多選單 ──────────────────────────────────────────────────────────────────
+function toggleMoreMenu(){
+  const dd = document.getElementById('more-menu-dropdown');
+  if(!dd) return;
+  const open = dd.style.display === 'none';
+  dd.style.display = open ? '' : 'none';
+  if(open){
+    // 點外部關閉
+    setTimeout(() => document.addEventListener('click', _closeMoreMenuOutside, {once:true}), 0);
+  }
+}
+function closeMoreMenu(){
+  const dd = document.getElementById('more-menu-dropdown');
+  if(dd) dd.style.display = 'none';
+}
+function _closeMoreMenuOutside(e){
+  const wrap = document.getElementById('more-menu-wrap');
+  if(wrap && !wrap.contains(e.target)) closeMoreMenu();
+}
+
+// ── 庫存資料（Google Sheets API）────────────────────────────────────────────
+const INVENTORY_SHEET_ID = '16zX_4gqmtI0G9ztLzNdCH7-gYtSO6a22cA0_lUU9j5c';
+const INVENTORY_SHEET_NAME = 'Coach總庫存';
+let _inventoryFetchPromise = null; // 避免重複同時請求
+
+async function fetchInventoryData(forceRefresh = false){
+  // 未登入則略過
+  if(!isGDriveAuthed()) return;
+
+  // 若已有資料且 5 分鐘內更新過，且不強制刷新，則略過
+  if(!forceRefresh && STATE.inventoryData.updated_at){
+    const age = Date.now() - STATE.inventoryData.updated_at;
+    if(age < 5 * 60 * 1000) return;
+  }
+
+  // 若已有進行中的請求，等它完成就好
+  if(_inventoryFetchPromise){ await _inventoryFetchPromise; return; }
+
+  STATE.inventoryData.loading = true;
+  // 不阻塞 UI，讓目前頁面先 render（顯示 loading 狀態）
+  if(STATE.selectedLink) renderItems(false);
+
+  _inventoryFetchPromise = (async () => {
+    try{
+      // Sheets API：取 Level7（M欄）和 QTY（K欄）所有資料
+      // 用 A1 notation 取兩個欄位範圍
+      const ranges = encodeURIComponent(`'${INVENTORY_SHEET_NAME}'!K:K`) + '&ranges=' + encodeURIComponent(`'${INVENTORY_SHEET_NAME}'!M:M`);
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${INVENTORY_SHEET_ID}/values:batchGet?ranges=${ranges}&valueRenderOption=UNFORMATTED_VALUE`;
+      const resp = await fetch(url, {
+        headers: { Authorization: 'Bearer ' + _gdriveToken }
+      });
+      if(!resp.ok){
+        const e = await resp.json().catch(()=>({}));
+        if(resp.status === 401){ clearGDriveToken(); updateGDriveUI(); }
+        console.warn('[Inventory] 抓取失敗:', resp.status, e.error?.message);
+        return;
+      }
+      const data = await resp.json();
+      const qtyValues = data.valueRanges[0]?.values || [];  // K欄 QTY
+      const scValues  = data.valueRanges[1]?.values || [];  // M欄 Level7 (Style Color)
+
+      // 建立 SC → QTY 加總 map（跳過 header 第一列）
+      const map = {};
+      const maxLen = Math.max(qtyValues.length, scValues.length);
+      for(let i = 1; i < maxLen; i++){
+        const sc = String((scValues[i] || [])[0] || '').trim();
+        const qty = Number((qtyValues[i] || [])[0]) || 0;
+        if(!sc) continue;
+        map[sc] = (map[sc] || 0) + qty;
+      }
+
+      STATE.inventoryData.map = map;
+      STATE.inventoryData.updated_at = Date.now();
+      console.log(`[Inventory] 載入完成，${Object.keys(map).length} 筆 SC`);
+
+      // 更新目前頁面顯示
+      if(STATE.selectedLink){
+        if(typeof _viewMode !== 'undefined' && _viewMode === 'grid') renderGridView();
+        else renderItems(false);
+      }
+    } catch(err){
+      console.warn('[Inventory] 例外:', err);
+    } finally {
+      STATE.inventoryData.loading = false;
+      _inventoryFetchPromise = null;
+    }
+  })();
+
+  await _inventoryFetchPromise;
+}
+
 // 檢查目前 token 的 scope（用於診斷）
 async function checkGDriveScope(){
   if(!_gdriveToken) return null;
@@ -6485,6 +6623,8 @@ async function init(){
   finally{ hideLoader(); }
   // 初始化 Google Drive UI
   initGDriveUI();
+  // 預先載入庫存資料（背景執行，不阻塞）
+  setTimeout(() => fetchInventoryData(), 800);
 }
 
 
